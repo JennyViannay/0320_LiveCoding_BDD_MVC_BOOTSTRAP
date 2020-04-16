@@ -29,6 +29,7 @@
                     <a class="nav-link" href="/home/shop">Home</a>
                 </li>
             </ul>
+                <a class="btn btn-purple my-2 my-sm-0 mr-4" href="/home/profile/{{session.user.id}}"><i class="fas fa-user"></i></a>
             {% if session.panier %}
                 <a class="btn btn-purple my-2 my-sm-0 mr-4" href="/home/basket"><i class="fas fa-shopping-cart"></i></a>
             {% endif %}

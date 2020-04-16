@@ -19,13 +19,14 @@ class PanierManager extends AbstractManager
         // prepared request
         $statement = $this->pdo->prepare(
             "INSERT INTO " . self::TABLE 
-            . " (`magicien_id`, `potion_id`, `qty`) 
-            VALUES (:title, :potion_id, :qty)"
+            . " (`magicien_id`, `potion_id`, `qty`,`token`) 
+            VALUES (:magicien_id, :potion_id, :qty, :token)"
         );
         $statement->bindValue('magicien_id', $item['magicien_id'], \PDO::PARAM_INT);
         $statement->bindValue('potion_id', $item['potion_id'], \PDO::PARAM_INT);
         $statement->bindValue('qty', $item['qty'], \PDO::PARAM_INT);
-        
+        $statement->bindValue('token', $item['token'], \PDO::PARAM_STR);
+
         if ($statement->execute()) {
             return (int)$this->pdo->lastInsertId();
         }

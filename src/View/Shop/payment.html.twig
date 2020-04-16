@@ -1,0 +1,65 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<div class="container text-center">
+<form method="POST">
+    <p id="card-errors"></p>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="name" class="form-control" id="name" name="name" required value="jenny">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" required value="jenny@gmail.com">
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="d-none form-control" id="amount" name="amount" required value="999">
+            </div>
+            <input type='text' id="token" name='stripeToken' style="display: none" value="">
+
+            <div id="card" class="my-5">
+                <div id="card-element">
+                    <input type="text" id="cb_number" data-stripe="number" value="4242424242424242">
+                    <input type="text" id="MM" data-stripe="exp_month" value="10">
+                    <input type="text" id="YY" data-stripe="exp_year" value="24">
+                    <input type="text" id="CVC" data-stripe="cvc" value="42424">
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary my-5 disabled" id="submit">Submit</button>
+</form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://js.stripe.com/v3/"></script>
+ <script>
+    var stripe = Stripe('pk_test_iQgBUXqWjZa5DkyikWWKdami00Fauo176W');
+    let form = document.getElementById('card');
+    let inputToken = document.getElementById('token')
+    let submitButton = document.getElementById('submit')
+    console.log(inputToken);
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');
+    cardElement.mount(form);
+    cardElement.on('change', (event) => {
+        var displayError = document.getElementById('card-errors');
+        if (event.complete) {
+            stripe.createToken(cardElement).then(result => {
+                if (result.token) {
+                    inputToken.value = result.token.id;
+                    submitButton.classList.remove('disabled');
+                } else if (result.error) {
+                    alert(result.error)
+                }
+            })
+        } else if (event.error) {
+            displayError.textContent = event.error.message;
+        }
+    });
+</script>
+{% endblock %}

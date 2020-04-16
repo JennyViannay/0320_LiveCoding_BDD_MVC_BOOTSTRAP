@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: sylvain
@@ -39,7 +40,7 @@ class MagicienManager extends AbstractManager
         $statement->bindValue('password', $magicien['password'], \PDO::PARAM_STR);
 
         if ($statement->execute()) {
-            return (int)$this->pdo->lastInsertId();
+            return (int) $this->pdo->lastInsertId();
         }
     }
 
@@ -64,13 +65,12 @@ class MagicienManager extends AbstractManager
 
     public function checkMagicienConnection($login)
     {
-        // prepared request
         $statement = $this->pdo->prepare("SELECT * FROM magicien WHERE email=:email");
         $statement->bindValue('email', $login['email'], \PDO::PARAM_STR);
         $statement->execute();
         $result = $statement->fetch();
-        if(!empty($result)){
-            if($result['password'] === $login['password']){
+        if (!empty($result)) {
+            if ($result['password'] === $login['password']) {
                 return $result;
             } else {
                 return "Incorrect password";
@@ -78,5 +78,13 @@ class MagicienManager extends AbstractManager
         } else {
             return 'Magicien not found';
         }
+    }
+
+    public function getHistory($id)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM panier WHERE magicien_id=:id");
+        $statement->bindValue('id', $id, \PDO::PARAM_STR);
+        $statement->execute();
+        return $statement->fetchAll();
     }
 }
