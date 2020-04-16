@@ -1,0 +1,14 @@
+body {
+    font-family: 'Anonymous Pro', monospace;
+}
+
+.total-table {
+    font-size : 24px;
+    font-weight: 700;
+}
+
+.btn-purple {
+    color: #fff;
+    background-color: #e361e2;
+    border-color: #e361e2;
+}

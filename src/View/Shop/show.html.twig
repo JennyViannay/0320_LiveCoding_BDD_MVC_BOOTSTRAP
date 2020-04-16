@@ -1,0 +1,112 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="mt-5">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% for categ in categorie %}
+                <li class="page-item"><a class="page-link" href="/Home/shop/{{ categ.id }}">{{categ.name|capitalize }}</a></li>
+                {% endfor %}
+                <li class="page-item"><a class="page-link" href="/Home/shop">All</a></li>
+            </ul>
+        </nav>
+    </div>
+    {% if messages.like is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.like}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% elseif messages.add_shop is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.add_shop}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% elseif messages.comment is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.comment}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    <div class="card my-5 mx-5 bg-dark text-white">
+        <div class="row">
+            <div class="col-5">
+                <img src="/assets/images/potion.jpg" class="card-img-top" alt="placeholder" style="width:400px;">
+            </div>
+            <div class="col-7">
+                <div class="card-body">
+                    <h5 class="card-title">{{ potion.name|capitalize }}</h5>
+                    <p class="card-text">Price : {{ potion.price }} €</p>
+                    <p><small>Categ : {{ potion.category_id }}</small></p>
+                    <p><small>id : {{ potion.id }}</small></p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <select class="custom-select custom-select-sm" name="qty" style="width:50px">
+                                <option selected value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <input type="text" class="d-none" id="id" name="id" value="{{potion.id}}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="add_shop">ADD</button>
+                        <button type="submit" class="btn btn-purple" name="like">
+                            <i class="fas fa-heart"></i> <span class="badge badge-light">{{potion.score}}</span>
+                        </button>
+                        <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal{{potion.id}}">
+                            <i class="fas fa-comments"></i> <span class="badge badge-light"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal{{potion.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Comments </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Comment :</label>
+                            <textarea type="text" class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <input type="text" class="d-none" id="id" name="id" value="{{potion.id}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="comment">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div data-spy="scroll" data-offset="0" class="my-5 mx-5">
+    {% for comment in comments %}
+        <div>
+            <h4 id="fat">@{{comment.author}} wrote :</h4>
+            <p>{{comment.description}}</p>
+            <p><small>Le {{ comment.created_at|date("d/m/Y") }}</small></p>
+        </div>
+        <hr>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

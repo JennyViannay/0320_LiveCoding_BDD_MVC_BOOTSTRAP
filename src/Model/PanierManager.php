@@ -1,52 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sylvain
- * Date: 07/03/18
- * Time: 18:20
- * PHP version 7
- */
 
 namespace App\Model;
 
 /**
  *
  */
-class ItemManager extends AbstractManager
+class PanierManager extends AbstractManager
 {
-    /**
-     *
-     */
-    const TABLE = 'item';
+    const TABLE = 'panier';
 
-    /**
-     *  Initializes this class.
-     */
     public function __construct()
     {
         parent::__construct(self::TABLE);
     }
 
-
-    /**
-     * @param array $item
-     * @return int
-     */
     public function insert(array $item): int
     {
         // prepared request
-        $statement = $this->pdo->prepare("INSERT INTO " . self::TABLE . " (`title`) VALUES (:title)");
-        $statement->bindValue('title', $item['title'], \PDO::PARAM_STR);
-
+        $statement = $this->pdo->prepare(
+            "INSERT INTO " . self::TABLE 
+            . " (`magicien_id`, `potion_id`, `qty`) 
+            VALUES (:title, :potion_id, :qty)"
+        );
+        $statement->bindValue('magicien_id', $item['magicien_id'], \PDO::PARAM_INT);
+        $statement->bindValue('potion_id', $item['potion_id'], \PDO::PARAM_INT);
+        $statement->bindValue('qty', $item['qty'], \PDO::PARAM_INT);
+        
         if ($statement->execute()) {
             return (int)$this->pdo->lastInsertId();
         }
     }
 
-
-    /**
-     * @param int $id
-     */
     public function delete(int $id): void
     {
         // prepared request
@@ -55,14 +39,8 @@ class ItemManager extends AbstractManager
         $statement->execute();
     }
 
-
-    /**
-     * @param array $item
-     * @return bool
-     */
     public function update(array $item):bool
     {
-
         // prepared request
         $statement = $this->pdo->prepare("UPDATE " . self::TABLE . " SET `title` = :title WHERE id=:id");
         $statement->bindValue('id', $item['id'], \PDO::PARAM_INT);

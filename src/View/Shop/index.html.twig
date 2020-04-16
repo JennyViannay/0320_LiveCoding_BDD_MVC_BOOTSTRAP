@@ -1,0 +1,116 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="mt-5">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% for categ in categorie %}
+                <li class="page-item"><a class="page-link" href="/Home/shop/{{ categ.id }}">{{categ.name|capitalize }}</a></li>
+                {% endfor %}
+                <li class="page-item"><a class="page-link" href="/Home/shop">All</a></li>
+            </ul>
+        </nav>
+    </div>
+    {% if messages.like is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.like}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% elseif messages.add_shop is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.add_shop}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% elseif messages.comment is not empty %}
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        {{messages.comment}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="row">
+    {% for item in potions %}
+        <div class="col-3">
+            <div class="card my-3 mx-3 bg-dark text-white">
+                <a href="/home/potion/{{item.id}}" >
+                    <img src="/assets/images/potion.jpg" class="card-img-top" alt="placeholder">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name|capitalize }}</h5>
+                    <p class="card-text">Price : {{ item.price }} €</p>
+                    <p><small>Categ : {{ item.category_id }}</small></p>
+                    <p><small>id : {{ item.id }}</small></p>
+                    <form method="POST">
+                        <div class="form-group">
+                            <select class="custom-select custom-select-sm" name="qty">
+                                <option selected value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <input type="text" class="d-none" id="id" name="id" value="{{item.id}}">
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="add_shop">ADD</button>
+                        <button type="submit" class="btn btn-purple" name="like">
+                            <i class="fas fa-heart"></i> <span class="badge badge-light">{{item.score}}</span>
+                        </button>
+                        <button type="button" class="btn btn-light" data-toggle="modal" data-target="#modal{{item.id}}">
+                            <i class="fas fa-comments"></i> <span class="badge badge-light"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="modal{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Comments </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="POST">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Comment :</label>
+                                <textarea type="text" class="form-control" id="description" name="description"></textarea>
+                            </div>
+                            <input type="text" class="d-none" id="id" name="id" value="{{item.id}}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="comment">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>Nothing to display</p>
+    {% endfor %}
+    
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $('#modal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+    })
+</script>
+{% endblock %}
