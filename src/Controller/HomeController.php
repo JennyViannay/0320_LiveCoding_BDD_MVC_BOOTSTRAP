@@ -8,7 +8,6 @@ use App\Model\MagicienManager;
 use App\Model\PanierManager;
 use App\Model\PotionManager;
 use Stripe\Stripe;
-use OAuthProvider\OAuthProvider;
 
 class HomeController extends AbstractController
 {
@@ -67,6 +66,7 @@ class HomeController extends AbstractController
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (isset($_POST['like'])) {
+
                     $this->like($_POST['id']);
                     $_POST = array();
                     $messages['like'] = "You liked this potion";
